@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ar">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- google fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&display=swap" rel="stylesheet" />
+  <!-- css file -->
+  <link rel="stylesheet" href="styles.css" />
+  <title>اضافة تطبيق - ادوات الذكاء</title>
+</head>
+
+<body>
+  <header>
+    <div class="container">
+      <div class="content">
+        <div class="logo">
+          <img src="pics/Logo.svg" alt="logo" class="logo-img" />
+          <span class="site-title">ادوات الذكاء</span>
+        </div>
+        <nav>
+          <ul>
+            <li><a href="index.html">الرئيسية</a></li>
+            <li><a href="aboutus.html">عن الموقع </a></li>
+            <li><a href="apps.html"> التطبيقات </a></li>
+          </ul>
+        </nav>
+        <div class="form-link">
+          <a class="btn btn-primary" href="addapp.html" target="">اضافة تطبيق جديد</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class=" app-form-section">
+      <div class="app-form-grid">
+        <section class="form-side">
+          <h2>إضافة تطبيق جديد</h2>
+          <p class="muted">املأ الحقول التالية لإضافة تطبيقك إلى دليلنا. سنعرض التطبيق بعد المراجعة.</p>
+          <form id="addAppForm" autocomplete="off">
+            <div class="form-group">
+              <label for="appName">اسم التطبيق (بالإنجليزية بدون فراغات)</label>
+              <input type="text" id="appName" name="appName" placeholder="مثال: MyApp" />
+            </div>
+            <div class="form-group">
+              <label for="companyName">اسم الشركة المنتجة</label>
+              <input type="text" id="companyName" name="companyName" placeholder="مثال: Example Ltd" />
+            </div>
+            <div class="form-group">
+              <label for="field">مجال الاستخدام</label>
+              <input type="text" id="field" name="field" placeholder="مثال: تعديل الصور" />
+            </div>
+            <div class="form-group">
+              <label for="isFree">نوع التطبيق</label>
+              <select id="isFree" name="isFree">
+                <option value="">اختر النوع</option>
+                <option value="free">مجاني</option>
+                <option value="paid">غير مجاني</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="description">وصف التطبيق</label>
+              <textarea id="description" name="description" rows="4" placeholder="أضف وصفًا مختصرًا عن مميزات التطبيق"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="website">رابط موقع التطبيق</label>
+              <input type="url" id="website" name="website" placeholder="https://example.com" />
+            </div>
+            <div class="form-group">
+              <label for="logoUrl">رابط صورة شعار التطبيق</label>
+              <input type="url" id="logoUrl" name="logoUrl" placeholder="https://.../logo.png" />
+            </div>
+            <div class="form-group">
+              <label for="videoUrl">رابط فيديو عن التطبيق (اختياري)</label>
+              <input type="url" id="videoUrl" name="videoUrl" placeholder="https://.../video.mp4" />
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-primary" type="submit">إضافة التطبيق</button>
+              <button class="btn reset" type="reset" id="resetBtn">إعادة تعيين</button>
+            </div>
+            <div id="formMsg" class="form-msg" aria-live="polite"></div>
+          </form>
+        </section>
+        <aside class="info-side">
+          <h3>شارك تطبيقك مع المجتمع!</h3>
+          <p>أضف تطبيقك ليظهر ضمن قائمة التطبيقات ويستفيد منه الجميع.</p>
+          <img src="pics/addApp.svg" alt="إضافة تطبيق جديد" class="addapp-img" />
+        </aside>
+      </div>
+    </div>
+  </main>
+  <script src="js/myFunctions.js"></script>
+  <script>
+    let apps = [];
+    try {
+      const stored = localStorage.getItem('apps');
+      if (stored) apps = JSON.parse(stored);
+    } catch (err) {
+      apps = [];
+    }
+
+    // Validation function
+    function validateForm(data) {
+      const nameRegex = /^[A-Za-z]+$/;
+      const companyRegex = /^[A-Za-z ]+$/;
+      const urlRegex = /^(https?:\/\/)[^\s]+$/;
+      let errors = [];
+      if (!data.appName || !nameRegex.test(data.appName)) {
+        errors.push('اسم التطبيق يجب أن يكون أحرف إنجليزية فقط بدون فراغات');
+      }
+      if (!data.companyName || !companyRegex.test(data.companyName)) {
+        errors.push('اسم الشركة يجب أن يكون أحرف إنجليزية ويمكن أن يحتوي فراغات');
+      }
+      if (!data.field) {
+        errors.push('مجال الاستخدام مطلوب');
+      }
+      if (!data.isFree) {
+        errors.push('يجب اختيار نوع التطبيق');
+      }
+      if (!data.description) {
+        errors.push('الوصف مطلوب');
+      }
+      if (!data.website || !urlRegex.test(data.website)) {
+        errors.push('رابط الموقع يجب أن يكون رابطاً صحيحاً');
+      }
+      if (!data.logoUrl || !urlRegex.test(data.logoUrl)) {
+        errors.push('رابط صورة اللوجو يجب أن يكون رابطاً صحيحاً');
+      }
+      if (!data.videoUrl || !urlRegex.test(data.videoUrl)) {
+        errors.push('رابط الفيديو يجب أن يكون رابطاً صحيحاً');
+      }
+      return errors;
+    }
+
+    document.getElementById('addAppForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const data = {
+        appName: document.getElementById('appName').value.trim(),
+        companyName: document.getElementById('companyName').value.trim(),
+        field: document.getElementById('field').value.trim(),
+        isFree: document.getElementById('isFree').value,
+        description: document.getElementById('description').value.trim(),
+        website: document.getElementById('website').value.trim(),
+        logoUrl: document.getElementById('logoUrl').value.trim(),
+        videoUrl: document.getElementById('videoUrl').value.trim()
+      };
+      const errors = validateForm(data);
+      const msg = document.getElementById('formMsg');
+      if (errors.length > 0) {
+        msg.textContent = errors.join('، ');
+        msg.style.color = 'red';
+      } else {
+        apps.push(data);
+        // save to localStorage
+        try {
+          localStorage.setItem('apps', JSON.stringify(apps));
+        } catch (err) {
+          console.error('خطأ في حفظ التطبيقات:', err);
+        }
+        msg.textContent = 'تمت إضافة التطبيق بنجاح!';
+        msg.style.color = 'green';
+        document.getElementById('addAppForm').reset();
+      }
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', function () {
+      document.getElementById('formMsg').textContent = '';
+    });
+  </script>
+</body>
+
+</html>
